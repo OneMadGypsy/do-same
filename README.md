@@ -1,2 +1,2 @@
 # do-same
-simple simon game for the pimoroni pico explorer
+A simple Simon clone for the Pimoroni pico explorer
