@@ -1,4 +1,4 @@
-import gypsy as exp
+import picoexplorer as exp
 from micropython import const
 from gc import collect
 from utime import sleep, sleep_ms
