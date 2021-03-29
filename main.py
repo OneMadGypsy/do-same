@@ -10,13 +10,9 @@ class SimonGame(object):
     PLAYER    = const(1)
     DURATION  = const(525)
     
-    @staticmethod
-    def RGB565(c:int) -> int:
-        return int.from_bytes((((((c >> 16) & 248) >> 3) << 11) | ((((c >> 8) & 252) >> 2) << 5) | ((c & 248) >> 3)).to_bytes(2, 'little'), 'big')
-    
-    @staticmethod   
-    def PAL(i:int) -> int:
-        return SimonGame.RGB565([0x00cc00, 0xcccc00, 0xcc0000, 0x0000cc, 0x00ff00, 0xffff00, 0xff0000, 0x0000ff, 0x008800, 0x888800, 0x880000, 0x000088, 0x880088, 0xff00ff][i])
+    def __pal(self, i:int):
+        i = i<<1
+        return int.from_bytes(memoryview(self.__palette)[i:i+2], 'big')
     
     def __init__(self) -> None:
         collect()                                                   #clean up memory
@@ -25,6 +21,7 @@ class SimonGame(object):
         exp.init(self.__b)                                          #init explorer
         exp.set_audio_pin(0)                                        #set audio pin
         
+        self.__palette = b'`\x06`\xce\x00\xc8\x19\x00\xe0\x07\xe0\xff\x00\xf8\x1f\x00@\x04@\x8c\x00\x88\x11\x00\x11\x88\x1f\xf8'
         self.__fart = 200                                           #loser/wrong sound
         self.__startscreen()                                        #init start screen
     
@@ -34,12 +31,12 @@ class SimonGame(object):
         self.__d = SimonGame.DURATION                               #initial note duration
         self.__u = SimonGame.SIMON                                  #current user
         self.__t = 0                                                #tries
-        self.__c = [12, 6, 10, 10, 12, 10, 12, 12, 12, 12]           #character widths
+        self.__c = [12, 6, 10, 10, 12, 10, 12, 12, 12, 12]          #character widths
         
         #draw start screen
-        exp.set_pen(SimonGame.PAL(5))
+        exp.set_pen(self.__pal(5))
         exp.clear()
-        exp.set_pen(SimonGame.PAL(2))
+        exp.set_pen(self.__pal(2))
         exp.text('DO SAME', 10, 20, 235, 6)
         exp.set_pen(0)
         exp.text('by: OneMadGypsy                                        2021', 10, 60, 240, 1)
@@ -75,17 +72,17 @@ class SimonGame(object):
             bt = n if p else bt
             tn = d if p else tn
             x, y = (n>1)*120, (n%2)*120
-            exp.set_pen(SimonGame.PAL(n+8))
+            exp.set_pen(self.__pal(n+8))
             exp.rectangle(x+2, y+2, 116, 116)
-            exp.set_pen(SimonGame.PAL(n+(4*p)))
+            exp.set_pen(self.__pal(n+(4*p)))
             exp.rectangle(x+7, y+7, 106, 106)
         
         #center circle for level display
         exp.set_pen(0)
         exp.circle(120, 120, 40)  
-        exp.set_pen(SimonGame.PAL(12))
+        exp.set_pen(self.__pal(12))
         exp.circle(120, 120, 36)         
-        exp.set_pen(SimonGame.PAL(13))
+        exp.set_pen(self.__pal(13))
         exp.circle(120, 120, 31)        
         exp.set_pen(65535)
         
