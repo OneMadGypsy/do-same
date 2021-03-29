@@ -1,5 +1,6 @@
 # do-same
 A Simon clone for the Pimoroni pico explorer
+
 Audio is connected to GP0 on the explorer
 
 Features:
